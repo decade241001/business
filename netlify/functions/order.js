@@ -1,5 +1,5 @@
 import { getStore } from "@netlify/blobs";
-import { products } from "./_products.js";
+import { products } from "./_shared/products.js";
 
 const clean = (s, n = 300) => String(s ?? "").trim().slice(0, n);
 

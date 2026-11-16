@@ -9,6 +9,6 @@
 3. Redeploy. Shop is at `/`, your orders are at `/admin.html`.
 
 ## Customise
-- Products and prices: `netlify/functions/_products.js` (put photos in `public/images/` and set `img: "/images/name.jpg"`).
+- Products and prices: `netlify/functions/_shared/products.js` (put photos in `public/images/` and set `img: "/images/name.jpg"`).
 - Business name, WhatsApp and Instagram: `public/index.html`.
 - Local testing: `npm i -g netlify-cli && npm i && netlify dev`.
