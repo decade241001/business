@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loop & Hook — Handmade Crochet, Nairobi</title>
+<meta name="description" content="Handmade crochet hats, bags, blankets and toys. Order online, pay by M-Pesa.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F1F8;--ink:#2A2140;--mut:#6B6283;--card:#fff;--yel:#E8B93A;--pink:#D9578B;--line:#DDD5E8}
+@media(prefers-color-scheme:dark){:root{--bg:#1D1630;--ink:#F3EEFA;--mut:#B3A8CC;--card:#2A2140;--line:#3F3460}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 Figtree,sans-serif}
+h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;line-height:1.1;margin:0}
+a{color:inherit}.wrap{max-width:1080px;margin:auto;padding:0 20px}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font:800 1.4rem 'Bricolage Grotesque';text-decoration:none}
+button{font:600 1rem Figtree;cursor:pointer;border:0;border-radius:999px;padding:11px 22px;background:var(--ink);color:var(--bg)}
+button.alt{background:var(--yel);color:#2A2140}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.hero{padding:56px 0 64px}
+.hero h1{font-size:clamp(2.6rem,8vw,5.6rem);font-weight:800;max-width:11ch}
+.hero p{max-width:46ch;color:var(--mut);font-size:1.15rem;margin:20px 0 28px}
+.stitch{height:28px;margin:0;background:
+ linear-gradient(135deg,transparent 45%,var(--pink) 45% 55%,transparent 55%) 0 0/28px 28px,
+ linear-gradient(225deg,transparent 45%,var(--pink) 45% 55%,transparent 55%) 0 0/28px 28px;opacity:.85}
+h2{font-size:2rem;margin:56px 0 24px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px}
+.card{background:var(--card);border-radius:18px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column}
+.thumb{height:170px;display:grid;place-items:center;font-size:4rem;background-size:cover;background-position:center}
+.card div.b{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card p{margin:0;color:var(--mut);font-size:.95rem;flex:1}.price{font-weight:600}
+.about{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.about p{color:var(--mut)}
+footer{margin-top:72px;padding:28px 0;border-top:1px solid var(--line);color:var(--mut);font-size:.95rem}
+aside{position:fixed;inset:0 0 0 auto;width:min(420px,100%);background:var(--card);box-shadow:-8px 0 30px #0004;padding:22px;transform:translateX(105%);transition:transform .25s;overflow:auto;z-index:5}
+aside.open{transform:none}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.qty button{padding:2px 11px;background:var(--line);color:var(--ink)}
+label{display:block;margin-top:12px;font-weight:600;font-size:.95rem}
+input,textarea{width:100%;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.msg{margin-top:14px;padding:12px;border-radius:10px;background:var(--bg)}.err{color:#C2314F}
+@media(prefers-reduced-motion:reduce){aside{transition:none}html{scroll-behavior:auto}}
+</style></head><body>
+<div class="wrap">
+ <header><a class="logo" href="#">Loop & Hook</a><button id="open">Cart (<span id="count">0</span>)</button></header>
+ <section class="hero">
+  <h1>Crochet made by hand, for you.</h1>
+  <p>Hats, bags, blankets and toys, made to order in Nairobi. Choose your piece, pick your colours, and pay by M-Pesa.</p>
+  <button class="alt" onclick="document.getElementById('shop').scrollIntoView()">Shop the collection</button>
+ </section>
+</div>
+<div class="stitch" aria-hidden="true"></div>
+<main class="wrap">
+ <h2 id="shop">Made to order</h2>
+ <div class="grid" id="grid" aria-live="polite">Loading products…</div>
+ <h2>How ordering works</h2>
+ <div class="about">
+  <div><h3>Order</h3><p>Add pieces to your cart and send your details. Put colours and sizes in the notes.</p></div>
+  <div><h3>Pay</h3><p>We confirm by phone, then you pay by M-Pesa. Work starts once payment is in.</p></div>
+  <div><h3>Receive</h3><p>Most pieces take 5 to 10 days. We deliver in Nairobi and send by courier countrywide.</p></div>
+ </div>
+</main>
+<footer><div class="wrap">© <span id="yr"></span> Loop & Hook · Instagram @loopandhook · WhatsApp +254 700 000000</div></footer>
+
+<aside id="cart" aria-label="Your cart">
+ <div class="row"><h3>Your cart</h3><button id="close" class="alt">Close</button></div>
+ <div id="lines"></div>
+ <p><b>Total: KES <span id="total">0</span></b></p>
+ <form id="f" novalidate>
+  <label>Full name<input name="name" autocomplete="name" required></label>
+  <label>Phone (M-Pesa number)<input name="phone" type="tel" autocomplete="tel" required placeholder="0712 345 678"></label>
+  <label>Delivery location<input name="address" required placeholder="Estate / town"></label>
+  <label>Notes (colours, sizes)<textarea name="notes" rows="3"></textarea></label>
+  <p><button class="alt" id="send">Place order</button></p>
+ </form>
+ <div id="out" class="msg" hidden></div>
+</aside>
+
+<script>
+const $=id=>document.getElementById(id);let P=[],cart=JSON.parse(localStorage.getItem('cart')||'{}');
+$('yr').textContent=new Date().getFullYear();
+const kes=n=>n.toLocaleString('en-KE');
+const save=()=>{localStorage.setItem('cart',JSON.stringify(cart));draw()};
+function draw(){
+ const ids=Object.keys(cart).filter(i=>P.find(p=>p.id===i));
+ $('count').textContent=ids.reduce((s,i)=>s+cart[i],0);
+ $('lines').innerHTML=ids.length?ids.map(i=>{const p=P.find(x=>x.id===i);return `<div class="row"><span>${p.name}<br><small>KES ${kes(p.price)}</small></span>
+  <span class="qty"><button data-d="-1" data-i="${i}" aria-label="Fewer">−</button> ${cart[i]} <button data-d="1" data-i="${i}" aria-label="More">+</button></span></div>`}).join(''):'<p>Your cart is empty. Add something from the collection.</p>';
+ $('total').textContent=kes(ids.reduce((s,i)=>s+cart[i]*P.find(p=>p.id===i).price,0));
+}
+$('lines').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=b.dataset.i;cart[i]=(cart[i]||0)+ +b.dataset.d;if(cart[i]<=0)delete cart[i];save()};
+$('grid').onclick=e=>{const b=e.target.closest('button');if(!b)return;cart[b.dataset.i]=(cart[b.dataset.i]||0)+1;save();$('cart').classList.add('open')};
+$('open').onclick=()=>$('cart').classList.add('open');$('close').onclick=()=>$('cart').classList.remove('open');
+fetch('/api/products').then(r=>r.json()).then(d=>{P=d;
+ $('grid').innerHTML=d.map(p=>{const img=p.img.startsWith('/');return `<article class="card"><div class="thumb" style="background-color:${p.color}33;${img?`background-image:url(${p.img})`:''}">${img?'':p.img}</div>
+ <div class="b"><h3>${p.name}</h3><p>${p.desc}</p><span class="price">KES ${kes(p.price)}</span><button data-i="${p.id}">Add to cart</button></div></article>`}).join('');draw()
+}).catch(()=>$('grid').textContent='Could not load products. Please refresh.');
+$('f').onsubmit=async e=>{e.preventDefault();const o=$('out');o.hidden=false;o.className='msg';
+ const items=Object.entries(cart).map(([id,qty])=>({id,qty}));
+ if(!items.length){o.textContent='Add at least one item first.';o.classList.add('err');return}
+ $('send').disabled=true;o.textContent='Sending…';
+ try{const r=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...Object.fromEntries(new FormData($('f'))),items})});
+  const d=await r.json();if(!r.ok)throw new Error(d.error||'Something went wrong');
+  o.textContent=`Thank you! Order ${d.id} received. Total KES ${kes(d.total)}. We will call you to confirm and share M-Pesa payment details.`;
+  cart={};save();$('f').reset()}
+ catch(err){o.textContent=err.message;o.classList.add('err')}
+ $('send').disabled=false};
+</script></body></html>

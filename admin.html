@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Orders</title>
+<style>body{font:16px system-ui;max-width:800px;margin:24px auto;padding:0 16px}.o{border:1px solid #ccc;border-radius:10px;padding:12px;margin:10px 0}select{margin-left:8px}</style></head><body>
+<h1>Orders</h1><input id="t" type="password" placeholder="Admin token"> <button onclick="load()">Load</button><div id="l"></div>
+<script>
+const H=()=>({'x-admin-token':document.getElementById('t').value});
+async function load(){const r=await fetch('/api/orders',{headers:H()});if(!r.ok){l.textContent='Wrong token';return}
+ l.innerHTML=(await r.json()).map(o=>`<div class="o"><b>${o.id}</b> · ${new Date(o.createdAt).toLocaleString()}<br>${esc(o.name)} · ${esc(o.phone)} · ${esc(o.address)}<br>
+ ${o.items.map(i=>i.qty+'× '+i.name).join(', ')} — <b>KES ${o.total}</b><br>${esc(o.notes)}<br>
+ Status: <select onchange="set('${o.id}',this.value)">${['new','paid','shipped','done'].map(s=>`<option ${s==o.status?'selected':''}>${s}</option>`).join('')}</select></div>`).join('')||'No orders yet.'}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function set(id,status){fetch('/api/orders',{method:'PATCH',headers:{...H(),'Content-Type':'application/json'},body:JSON.stringify({id,status})})}
+</script></body></html>
